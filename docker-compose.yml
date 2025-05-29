@@ -1,0 +1,26 @@
+# Remove the obsolete `version:` line if you’d like, Compose will auto-detect the format
+
+services:
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount the actual JSON file from the repo root into /app/credentials.json
+      - ./youtube-comment-insights-f6003d579ea6.json:/app/credentials.json:ro
+    environment:
+      # Override inside-container path for GOOGLE_APPLICATION_CREDENTIALS
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
